@@ -15,6 +15,6 @@
 
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_settings"
-    android:name="android.example.com.squawker.following.FollowingPreferenceFragment"
+    android:name="com.alexbaryzhikov.squawker.following.FollowingPreferenceFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

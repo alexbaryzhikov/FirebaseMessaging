@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="android.example.com.squawker">
+    package="com.alexbaryzhikov.squawker">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -24,7 +24,7 @@
 
         <provider
             android:name=".provider.generated.SquawkProvider"
-            android:authorities="android.example.com.squawker.provider.provider"
+            android:authorities="com.alexbaryzhikov.squawker.provider"
             android:exported="false" />
 
         <activity

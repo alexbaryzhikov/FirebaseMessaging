@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package android.example.com.squawker.provider;
+package com.alexbaryzhikov.squawker.provider;
 
 import android.net.Uri;
 
@@ -30,9 +30,7 @@ import net.simonvt.schematic.annotation.TableEndpoint;
         authority = SquawkProvider.AUTHORITY,
         database = SquawkDatabase.class)
 public final class SquawkProvider {
-
-    public static final String AUTHORITY = "android.example.com.squawker.provider.provider";
-
+    public static final String AUTHORITY = "com.alexbaryzhikov.squawker.provider";
 
     @TableEndpoint(table = SquawkDatabase.SQUAWK_MESSAGES)
     public static class SquawkMessages {

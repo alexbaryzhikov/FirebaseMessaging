@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.example.com.squawker.fcm;
+package com.alexbaryzhikov.squawker.fcm;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -21,10 +21,9 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.example.com.squawker.MainActivity;
-import android.example.com.squawker.R;
-import android.example.com.squawker.provider.SquawkContract;
-import android.example.com.squawker.provider.SquawkProvider;
+import com.alexbaryzhikov.squawker.MainActivity;
+import com.alexbaryzhikov.squawker.provider.SquawkContract;
+import com.alexbaryzhikov.squawker.provider.SquawkProvider;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;

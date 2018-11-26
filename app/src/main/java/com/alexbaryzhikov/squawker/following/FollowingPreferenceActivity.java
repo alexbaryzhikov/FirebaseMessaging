@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.example.com.squawker.following;
+package com.alexbaryzhikov.squawker.following;
 
-import android.example.com.squawker.R;
 import android.os.Bundle;
 import androidx.core.app.NavUtils;
 import androidx.appcompat.app.ActionBar;
