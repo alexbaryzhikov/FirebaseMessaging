@@ -13,32 +13,29 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.alexbaryzhikov.squawker.provider;
+package com.alexbaryzhikov.squawker.provider
 
-import android.net.Uri;
+import android.net.Uri
 
-import net.simonvt.schematic.annotation.ContentProvider;
-import net.simonvt.schematic.annotation.ContentUri;
-import net.simonvt.schematic.annotation.TableEndpoint;
+import net.simonvt.schematic.annotation.ContentProvider
+import net.simonvt.schematic.annotation.ContentUri
+import net.simonvt.schematic.annotation.TableEndpoint
 
 /**
  * Uses the Schematic (https://github.com/SimonVT/schematic) to create a content provider and
  * define URIs for the provider
  */
-@SuppressWarnings("WeakerAccess")
-@ContentProvider(
-        authority = SquawkProvider.AUTHORITY,
-        database = SquawkDatabase.class)
-public final class SquawkProvider {
-    public static final String AUTHORITY = "com.alexbaryzhikov.squawker.provider";
+@ContentProvider(authority = SquawkProvider.AUTHORITY, database = SquawkDatabase::class)
+object SquawkProvider {
+    const val AUTHORITY = "com.alexbaryzhikov.squawker.provider"
 
     @TableEndpoint(table = SquawkDatabase.SQUAWK_MESSAGES)
-    public static class SquawkMessages {
-
+    object SquawkMessages {
         @ContentUri(
-                path = "messages",
-                type = "vnd.android.cursor.dir/messages",
-                defaultSort = SquawkContract.COLUMN_DATE + " DESC")
-        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/messages");
+            path = "messages",
+            type = "vnd.android.cursor.dir/messages",
+            defaultSort = "${SquawkContract.COLUMN_DATE} DESC"
+        )
+        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/messages")
     }
 }

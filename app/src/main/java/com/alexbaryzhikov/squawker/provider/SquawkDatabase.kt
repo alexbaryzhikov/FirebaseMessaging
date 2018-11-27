@@ -13,22 +13,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.alexbaryzhikov.squawker.provider;
+package com.alexbaryzhikov.squawker.provider
 
-import net.simonvt.schematic.annotation.Database;
-import net.simonvt.schematic.annotation.Table;
+import net.simonvt.schematic.annotation.Database
+import net.simonvt.schematic.annotation.Table
 
 /**
  * Uses the Schematic (https://github.com/SimonVT/schematic) library to create a database with one
  * table for messages
  */
-@SuppressWarnings("WeakerAccess")
 @Database(version = SquawkDatabase.VERSION)
-public class SquawkDatabase {
+object SquawkDatabase {
+    @Suppress("MemberVisibilityCanBePrivate")
+    const val VERSION = 4
 
-    public static final int VERSION = 4;
-
-    @Table(SquawkContract.class)
-    public static final String SQUAWK_MESSAGES = "squawk_messages";
-
+    @Table(SquawkContract::class)
+    const val SQUAWK_MESSAGES = "squawk_messages"
 }

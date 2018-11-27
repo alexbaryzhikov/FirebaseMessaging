@@ -7,8 +7,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Activity that implements [CoroutineScope] and has [Dispatchers.Main] as a default dispatcher.
+ */
 abstract class ScopedAppActivity : AppCompatActivity(), CoroutineScope {
-    protected lateinit var job: Job
+    private lateinit var job: Job
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main

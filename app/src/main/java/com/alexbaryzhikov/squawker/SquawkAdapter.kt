@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.alexbaryzhikov.squawker
 
 import android.annotation.SuppressLint
@@ -56,11 +55,11 @@ class SquawkAdapter : RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder>() {
         // the hour, etc.
         var date = if (now - dateMillis < DAY_MILLIS) {
             if (now - dateMillis < HOUR_MILLIS) {
-                val minutes = Math.round(((now - dateMillis) / MINUTE_MILLIS).toFloat()).toLong()
-                minutes.toString() + "m"
+                val minutes = Math.round((now - dateMillis) / MINUTE_MILLIS.toDouble())
+                "${minutes}m"
             } else {
-                val minutes = Math.round(((now - dateMillis) / HOUR_MILLIS).toFloat()).toLong()
-                minutes.toString() + "h"
+                val minutes = Math.round((now - dateMillis) / HOUR_MILLIS.toDouble())
+                "${minutes}h"
             }
         } else {
             val dateDate = Date(dateMillis)
@@ -90,7 +89,7 @@ class SquawkAdapter : RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder>() {
         return data?.count ?: 0
     }
 
-    internal fun swapCursor(newCursor: Cursor) {
+    internal fun swapCursor(newCursor: Cursor?) {
         data = newCursor
         notifyDataSetChanged()
     }
@@ -103,7 +102,7 @@ class SquawkAdapter : RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder>() {
     }
 
     companion object {
-        private const val MINUTE_MILLIS = (1000 * 60).toLong()
+        private const val MINUTE_MILLIS = 1000L * 60
         private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
         private const val DAY_MILLIS = 24 * HOUR_MILLIS
         @SuppressLint("ConstantLocale")
