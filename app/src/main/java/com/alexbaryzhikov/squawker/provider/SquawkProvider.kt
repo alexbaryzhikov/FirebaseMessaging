@@ -15,27 +15,98 @@
 */
 package com.alexbaryzhikov.squawker.provider
 
+import android.annotation.SuppressLint
+import android.content.ContentProvider
+import android.content.ContentUris
+import android.content.ContentValues
+import android.content.UriMatcher
+import android.database.Cursor
+import android.database.SQLException
 import android.net.Uri
+import com.alexbaryzhikov.squawker.provider.SquawkContract.MessagesEntry
 
-import net.simonvt.schematic.annotation.ContentProvider
-import net.simonvt.schematic.annotation.ContentUri
-import net.simonvt.schematic.annotation.TableEndpoint
+class SquawkProvider : ContentProvider() {
+    private lateinit var squawkDbHelper: SquawkDbHelper
 
-/**
- * Uses the Schematic (https://github.com/SimonVT/schematic) to create a content provider and
- * define URIs for the provider
- */
-@ContentProvider(authority = SquawkProvider.AUTHORITY, database = SquawkDatabase::class)
-object SquawkProvider {
-    const val AUTHORITY = "com.alexbaryzhikov.squawker.provider"
+    override fun onCreate(): Boolean {
+        squawkDbHelper = SquawkDbHelper(context)
+        return true
+    }
 
-    @TableEndpoint(table = SquawkDatabase.SQUAWK_MESSAGES)
-    object SquawkMessages {
-        @ContentUri(
-            path = "messages",
-            type = "vnd.android.cursor.dir/messages",
-            defaultSort = "${SquawkContract.COLUMN_DATE} DESC"
-        )
-        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/messages")
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+        if (uriMatcher.match(uri) != MESSAGES) {
+            throw UnsupportedOperationException("Unknown uri: $uri")
+        }
+
+        val db = squawkDbHelper.writableDatabase
+        val id = db.insert(MessagesEntry.TABLE_NAME, null, values)
+        if (id <= 0) {
+            throw SQLException("Failed to insert row into $uri")
+        }
+
+        context?.contentResolver?.notifyChange(uri, null)
+        SquawkContract.onUpdate?.invoke()
+        return ContentUris.withAppendedId(MessagesEntry.CONTENT_URI, id)
+    }
+
+    @SuppressLint("Recycle")
+    override fun query(
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String?,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
+    ): Cursor? {
+        if (uriMatcher.match(uri) != MESSAGES) {
+            throw UnsupportedOperationException("Unknown uri: $uri")
+        }
+
+        val db = squawkDbHelper.writableDatabase
+        return db.query(
+            MessagesEntry.TABLE_NAME,
+            projection,
+            selection,
+            selectionArgs,
+            null,
+            null,
+            sortOrder
+        ).apply { setNotificationUri(context?.contentResolver, uri) }
+    }
+
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+        if (uriMatcher.match(uri) != MESSAGE_WITH_ID) {
+            throw UnsupportedOperationException("Unknown uri: $uri")
+        }
+
+        val db = squawkDbHelper.writableDatabase
+        val id = uri.pathSegments[1]
+        return db.update(MessagesEntry.TABLE_NAME, values, "_id=?", arrayOf(id))
+            .also { if (it != 0) context?.contentResolver?.notifyChange(uri, null) }
+    }
+
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
+        if (uriMatcher.match(uri) != MESSAGE_WITH_ID) {
+            throw UnsupportedOperationException("Unknown uri: $uri")
+        }
+
+        val db = squawkDbHelper.writableDatabase
+        val id = uri.pathSegments[1]
+        return db.delete(MessagesEntry.TABLE_NAME, "_id=?", arrayOf(id))
+            .also { if (it != 0) context?.contentResolver?.notifyChange(uri, null) }
+    }
+
+    override fun getType(uri: Uri): String? = when (uriMatcher.match(uri)) {
+        MESSAGES -> "vnd.android.cursor.dir/{${SquawkContract.AUTHORITY}.${SquawkContract.PATH_MESSAGES}"
+        MESSAGE_WITH_ID -> "vnd.android.cursor.item/{${SquawkContract.AUTHORITY}.${SquawkContract.PATH_MESSAGES}"
+        else -> throw java.lang.UnsupportedOperationException("Unknown uri: $uri")
+    }
+
+    companion object {
+        const val MESSAGES = 100
+        const val MESSAGE_WITH_ID = 101
+        val uriMatcher: UriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
+            addURI(SquawkContract.AUTHORITY, SquawkContract.PATH_MESSAGES, MESSAGES)
+            addURI(SquawkContract.AUTHORITY, "${SquawkContract.PATH_MESSAGES}/#", MESSAGE_WITH_ID)
+        }
     }
 }

@@ -16,34 +16,12 @@
 package com.alexbaryzhikov.squawker.provider
 
 import android.content.SharedPreferences
-import net.simonvt.schematic.annotation.*
+import android.net.Uri
 
-/**
- * Uses the Schematic (https://github.com/SimonVT/schematic) library to define the columns in a
- * content provider baked by a database
- */
 object SquawkContract {
-    @Suppress("unused")
-    @DataType(DataType.Type.INTEGER)
-    @PrimaryKey(onConflict = ConflictResolutionType.REPLACE)
-    @AutoIncrement
-    const val COLUMN_ID = "_id"
-
-    @DataType(DataType.Type.TEXT)
-    @NotNull
-    const val COLUMN_AUTHOR = "author"
-
-    @DataType(DataType.Type.TEXT)
-    @NotNull
-    const val COLUMN_AUTHOR_KEY = "authorKey"
-
-    @DataType(DataType.Type.TEXT)
-    @NotNull
-    const val COLUMN_MESSAGE = "message"
-
-    @DataType(DataType.Type.INTEGER)
-    @NotNull
-    const val COLUMN_DATE = "date"
+    const val AUTHORITY = "com.alexbaryzhikov.squawker.provider"
+    val BASE_CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY")
+    const val PATH_MESSAGES = "messages"
 
     // Topic keys as matching what is found in the database
     const val ASSER_KEY = "key_asser"
@@ -54,14 +32,27 @@ object SquawkContract {
     private const val TEST_ACCOUNT_KEY = "key_test"
     private val INSTRUCTOR_KEYS = arrayOf(ASSER_KEY, CEZANNE_KEY, JLIN_KEY, LYLA_KEY, NIKITA_KEY)
 
+    var onUpdate: (() -> Unit)? = null
+
     /**
      * Creates a SQLite SELECTION parameter that filters just the rows for the authors you are
      * currently following.
      */
     fun createSelectionForCurrentFollowers(preferences: SharedPreferences) = StringBuilder()
-        .append("$COLUMN_AUTHOR_KEY IN ('$TEST_ACCOUNT_KEY'")
+        .append("${MessagesEntry.COLUMN_AUTHOR_KEY} IN ('$TEST_ACCOUNT_KEY'")
         .append(INSTRUCTOR_KEYS.fold("") { acc, key ->
             if (preferences.getBoolean(key, false)) "$acc,'$key'" else acc
         })
         .append(")").toString()
+
+    object MessagesEntry {
+        const val _ID = "_id"
+        const val TABLE_NAME = "messages"
+        const val COLUMN_AUTHOR = "author"
+        const val COLUMN_AUTHOR_KEY = "authorKey"
+        const val COLUMN_MESSAGE = "message"
+        const val COLUMN_DATE = "date"
+
+        val CONTENT_URI: Uri = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MESSAGES).build()
+    }
 }

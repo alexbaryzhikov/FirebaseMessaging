@@ -90,6 +90,9 @@ class SquawkAdapter : RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder>() {
     }
 
     internal fun swapCursor(newCursor: Cursor?) {
+        // Finalize old cursor
+        data?.close()
+        // Setup new cursor
         data = newCursor
         notifyDataSetChanged()
     }
@@ -102,6 +105,7 @@ class SquawkAdapter : RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder>() {
     }
 
     companion object {
+        private const val TAG = "SquawkAdapter"
         private const val MINUTE_MILLIS = 1000L * 60
         private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
         private const val DAY_MILLIS = 24 * HOUR_MILLIS

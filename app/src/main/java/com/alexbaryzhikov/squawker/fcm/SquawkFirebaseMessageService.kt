@@ -27,8 +27,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.alexbaryzhikov.squawker.MainActivity
 import com.alexbaryzhikov.squawker.R
-import com.alexbaryzhikov.squawker.provider.SquawkContract
-import com.alexbaryzhikov.squawker.provider.SquawkProvider
+import com.alexbaryzhikov.squawker.provider.SquawkContract.MessagesEntry
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.GlobalScope
@@ -39,6 +38,7 @@ import kotlinx.coroutines.launch
  * appropriately depending on type of message
  */
 class SquawkFirebaseMessageService : FirebaseMessagingService() {
+
     /**
      * Called when message is received.
      *
@@ -67,8 +67,6 @@ class SquawkFirebaseMessageService : FirebaseMessagingService() {
             }
 
             Log.d(TAG, "Message data payload: $data")
-
-            // Send a notification that you got a new message
             sendNotification(data)
             insertSquawk(data)
         }
@@ -91,11 +89,11 @@ class SquawkFirebaseMessageService : FirebaseMessagingService() {
      */
     private fun insertSquawk(data: Map<String, String>) = GlobalScope.launch {
         val newMessage = ContentValues()
-        newMessage.put(SquawkContract.COLUMN_AUTHOR, data[JSON_KEY_AUTHOR])
-        newMessage.put(SquawkContract.COLUMN_MESSAGE, data[JSON_KEY_MESSAGE]?.trim { it <= ' ' })
-        newMessage.put(SquawkContract.COLUMN_DATE, data[JSON_KEY_DATE])
-        newMessage.put(SquawkContract.COLUMN_AUTHOR_KEY, data[JSON_KEY_AUTHOR_KEY])
-        contentResolver.insert(SquawkProvider.SquawkMessages.CONTENT_URI, newMessage)
+        newMessage.put(MessagesEntry.COLUMN_AUTHOR, data[JSON_KEY_AUTHOR])
+        newMessage.put(MessagesEntry.COLUMN_MESSAGE, data[JSON_KEY_MESSAGE]?.trim { it <= ' ' })
+        newMessage.put(MessagesEntry.COLUMN_DATE, data[JSON_KEY_DATE])
+        newMessage.put(MessagesEntry.COLUMN_AUTHOR_KEY, data[JSON_KEY_AUTHOR_KEY])
+        contentResolver.insert(MessagesEntry.CONTENT_URI, newMessage)
     }
 
     /**
@@ -165,10 +163,10 @@ class SquawkFirebaseMessageService : FirebaseMessagingService() {
     }
 
     companion object {
-        private const val JSON_KEY_AUTHOR = SquawkContract.COLUMN_AUTHOR
-        private const val JSON_KEY_AUTHOR_KEY = SquawkContract.COLUMN_AUTHOR_KEY
-        private const val JSON_KEY_MESSAGE = SquawkContract.COLUMN_MESSAGE
-        private const val JSON_KEY_DATE = SquawkContract.COLUMN_DATE
+        private const val JSON_KEY_AUTHOR = MessagesEntry.COLUMN_AUTHOR
+        private const val JSON_KEY_AUTHOR_KEY = MessagesEntry.COLUMN_AUTHOR_KEY
+        private const val JSON_KEY_MESSAGE = MessagesEntry.COLUMN_MESSAGE
+        private const val JSON_KEY_DATE = MessagesEntry.COLUMN_DATE
 
         private const val NOTIFICATION_MAX_CHARACTERS = 30
         private const val CHANNEL_ID = "Squawker"

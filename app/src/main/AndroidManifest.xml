@@ -23,7 +23,7 @@
         </activity>
 
         <provider
-            android:name=".provider.generated.SquawkProvider"
+            android:name=".provider.SquawkProvider"
             android:authorities="com.alexbaryzhikov.squawker.provider"
             android:exported="false" />
 

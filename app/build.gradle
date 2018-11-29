@@ -1,11 +1,6 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'kotlin-kapt'
-
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -48,10 +43,6 @@ dependencies {
 
     // Firebase
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
-
-    // Schematic for ContentProvider
-    kapt 'net.simonvt.schematic:schematic-compiler:0.7.0'
-    implementation 'net.simonvt.schematic:schematic:0.7.0'
 
     // Tests
     testImplementation 'junit:junit:4.12'

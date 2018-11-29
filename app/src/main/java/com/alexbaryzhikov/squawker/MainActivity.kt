@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alexbaryzhikov.squawker.following.FollowingPreferenceActivity
 import com.alexbaryzhikov.squawker.provider.SquawkContract
-import com.alexbaryzhikov.squawker.provider.SquawkProvider
+import com.alexbaryzhikov.squawker.provider.SquawkContract.MessagesEntry
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.launch
@@ -61,20 +61,10 @@ class MainActivity : ScopedAppActivity() {
         recyclerView.adapter = adapter
 
         // Load stored data
-        launch {
-            val selection = SquawkContract.createSelectionForCurrentFollowers(
-                PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
-            )
-            Log.d(TAG, "Selection is $selection")
-            val data = contentResolver.query(
-                SquawkProvider.SquawkMessages.CONTENT_URI,
-                MESSAGES_PROJECTION,
-                selection,
-                null,
-                SquawkContract.COLUMN_DATE + " DESC"
-            )
-            adapter.swapCursor(data)
-        }
+        loadMessages()
+
+        // Setup update callback
+        SquawkContract.onUpdate = this@MainActivity::loadMessages
 
         // If a notification message is tapped, any data accompanying the notification
         // message is available in the intent extras. In this sample the launcher
@@ -107,6 +97,23 @@ class MainActivity : ScopedAppActivity() {
         })
     }
 
+    private fun loadMessages() {
+        launch {
+            val selection = SquawkContract.createSelectionForCurrentFollowers(
+                PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
+            )
+            Log.d(TAG, "Selection is $selection")
+            val data = contentResolver.query(
+                MessagesEntry.CONTENT_URI,
+                MESSAGES_PROJECTION,
+                selection,
+                null,
+                MessagesEntry.COLUMN_DATE + " DESC"
+            )
+            adapter.swapCursor(data)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
@@ -133,10 +140,10 @@ class MainActivity : ScopedAppActivity() {
         private const val TAG = "MainActivity"
 
         private val MESSAGES_PROJECTION = arrayOf(
-            SquawkContract.COLUMN_AUTHOR,
-            SquawkContract.COLUMN_MESSAGE,
-            SquawkContract.COLUMN_DATE,
-            SquawkContract.COLUMN_AUTHOR_KEY
+            MessagesEntry.COLUMN_AUTHOR,
+            MessagesEntry.COLUMN_MESSAGE,
+            MessagesEntry.COLUMN_DATE,
+            MessagesEntry.COLUMN_AUTHOR_KEY
         )
     }
 }
