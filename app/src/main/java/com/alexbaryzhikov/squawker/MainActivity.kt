@@ -16,7 +16,10 @@
 package com.alexbaryzhikov.squawker
 
 import android.content.Intent
+import android.database.ContentObserver
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -34,6 +37,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ScopedAppActivity() {
     private lateinit var adapter: SquawkAdapter
+    private lateinit var fcmObserver: FcmObserver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +68,9 @@ class MainActivity : ScopedAppActivity() {
         loadMessages()
 
         // Setup update callback
-        SquawkContract.onUpdate = this@MainActivity::loadMessages
+        val handler = Handler(Looper.getMainLooper())
+        fcmObserver = FcmObserver(handler, this::loadMessages)
+        contentResolver.registerContentObserver(MessagesEntry.CONTENT_URI, false, fcmObserver)
 
         // If a notification message is tapped, any data accompanying the notification
         // message is available in the intent extras. In this sample the launcher
@@ -97,21 +103,9 @@ class MainActivity : ScopedAppActivity() {
         })
     }
 
-    private fun loadMessages() {
-        launch {
-            val selection = SquawkContract.createSelectionForCurrentFollowers(
-                PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
-            )
-            Log.d(TAG, "Selection is $selection")
-            val data = contentResolver.query(
-                MessagesEntry.CONTENT_URI,
-                MESSAGES_PROJECTION,
-                selection,
-                null,
-                MessagesEntry.COLUMN_DATE + " DESC"
-            )
-            adapter.swapCursor(data)
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        contentResolver.unregisterContentObserver(fcmObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -129,6 +123,30 @@ class MainActivity : ScopedAppActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun loadMessages() {
+        launch {
+            val selection = SquawkContract.createSelectionForCurrentFollowers(
+                PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
+            )
+            Log.d(TAG, "Selection is $selection")
+            val data = contentResolver.query(
+                MessagesEntry.CONTENT_URI,
+                MESSAGES_PROJECTION,
+                selection,
+                null,
+                MessagesEntry.COLUMN_DATE + " DESC"
+            )
+            adapter.swapCursor(data)
+        }
+    }
+
+    private class FcmObserver(handler: Handler, val callback: () -> Unit) : ContentObserver(handler) {
+        override fun onChange(selfChange: Boolean) {
+            super.onChange(selfChange)
+            callback()
+        }
     }
 
     companion object {

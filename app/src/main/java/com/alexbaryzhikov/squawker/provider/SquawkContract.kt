@@ -32,8 +32,6 @@ object SquawkContract {
     private const val TEST_ACCOUNT_KEY = "key_test"
     private val INSTRUCTOR_KEYS = arrayOf(ASSER_KEY, CEZANNE_KEY, JLIN_KEY, LYLA_KEY, NIKITA_KEY)
 
-    var onUpdate: (() -> Unit)? = null
-
     /**
      * Creates a SQLite SELECTION parameter that filters just the rows for the authors you are
      * currently following.

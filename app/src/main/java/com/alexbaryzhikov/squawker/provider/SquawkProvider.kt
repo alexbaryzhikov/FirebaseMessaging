@@ -45,7 +45,6 @@ class SquawkProvider : ContentProvider() {
         }
 
         context?.contentResolver?.notifyChange(uri, null)
-        SquawkContract.onUpdate?.invoke()
         return ContentUris.withAppendedId(MessagesEntry.CONTENT_URI, id)
     }
 
