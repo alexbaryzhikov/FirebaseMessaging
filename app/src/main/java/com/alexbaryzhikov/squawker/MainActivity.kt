@@ -27,12 +27,12 @@ import android.widget.Toast
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.alexbaryzhikov.squawker.following.FollowingPreferenceActivity
 import com.alexbaryzhikov.squawker.provider.SquawkContract
 import com.alexbaryzhikov.squawker.provider.SquawkContract.MessagesEntry
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 
 class MainActivity : ScopedAppActivity() {
@@ -43,26 +43,24 @@ class MainActivity : ScopedAppActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val recyclerView: RecyclerView = findViewById(R.id.squawks_recycler_view)
-
         // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true)
+        squawksRecyclerView.setHasFixedSize(true)
 
         // Use a linear layout manager
         val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        squawksRecyclerView.layoutManager = layoutManager
 
         // Add dividers
         val dividerItemDecoration = DividerItemDecoration(
-            recyclerView.context,
+            squawksRecyclerView.context,
             layoutManager.orientation
         )
-        recyclerView.addItemDecoration(dividerItemDecoration)
+        squawksRecyclerView.addItemDecoration(dividerItemDecoration)
 
         // Specify an adapter
         adapter = SquawkAdapter()
-        recyclerView.adapter = adapter
+        squawksRecyclerView.adapter = adapter
 
         // Load stored data
         loadMessages()

@@ -21,7 +21,7 @@
     tools:context="com.alexbaryzhikov.squawker.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/squawks_recycler_view"
+        android:id="@+id/squawksRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

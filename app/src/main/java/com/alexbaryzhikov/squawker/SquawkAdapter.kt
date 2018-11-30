@@ -48,7 +48,7 @@ class SquawkAdapter : RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder>() {
         val authorKey = dataCp.getString(MainActivity.COL_NUM_AUTHOR_KEY)
 
         // Get the date for displaying
-        val dateMillis = dataCp.getLong(MainActivity.COL_NUM_DATE)
+        val dateMillis = dataCp.getLong(MainActivity.COL_NUM_DATE) * 1000L
         val now = System.currentTimeMillis()
 
         // Change how the date is displayed depending on whether it was written in the last minute,
@@ -105,7 +105,6 @@ class SquawkAdapter : RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder>() {
     }
 
     companion object {
-        private const val TAG = "SquawkAdapter"
         private const val MINUTE_MILLIS = 1000L * 60
         private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
         private const val DAY_MILLIS = 24 * HOUR_MILLIS

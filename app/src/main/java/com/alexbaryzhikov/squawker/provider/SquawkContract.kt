@@ -43,12 +43,18 @@ object SquawkContract {
         })
         .append(")").toString()
 
+    @Suppress("ObjectPropertyName")
     object MessagesEntry {
-        const val _ID = "_id"
         const val TABLE_NAME = "messages"
+        /** Row ID */
+        const val _ID = "_id"
+        /** Author name */
         const val COLUMN_AUTHOR = "author"
+        /** Unique author key */
         const val COLUMN_AUTHOR_KEY = "authorKey"
+        /** Message body */
         const val COLUMN_MESSAGE = "message"
+        /** Message timestamp, seconds */
         const val COLUMN_DATE = "date"
 
         val CONTENT_URI: Uri = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MESSAGES).build()
