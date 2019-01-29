@@ -26,6 +26,7 @@ import com.google.firebase.messaging.FirebaseMessaging
  * Shows the list of instructors you can follow
  */
 class FollowingPreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         // Add visualizer preferences, defined in the XML file in res->xml->preferences_squawker
         addPreferencesFromResource(R.xml.following_squawker)

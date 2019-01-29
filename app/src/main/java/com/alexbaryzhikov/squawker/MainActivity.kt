@@ -23,7 +23,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,11 +77,9 @@ class MainActivity : ScopedAppActivity() {
         // is used when no click_action is specified.
         //
         // Handle possible data accompanying notification message.
-        intent.extras?.let {
-            for (key in it.keySet()) {
-                val value = intent.extras?.get(key)
-                Log.d(TAG, "Key: $key Value: $value")
-            }
+        intent.extras?.let { bundle ->
+            val data = bundle.keySet().map { key -> "$key -> ${bundle.get(key)}" }
+            Log.i(TAG, "Data: $data")
         }
 
         // Get token from the ID Service you created and show it in a log
@@ -93,11 +90,7 @@ class MainActivity : ScopedAppActivity() {
             }
 
             val token = task.result?.token
-
-            // Log and toast
-            val msg = getString(R.string.message_token_format, token)
-            Log.d(TAG, msg)
-            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            Log.i(TAG, "Token = [$token]")
         })
     }
 

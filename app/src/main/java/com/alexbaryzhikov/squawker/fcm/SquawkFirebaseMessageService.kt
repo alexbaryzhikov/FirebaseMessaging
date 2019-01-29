@@ -58,15 +58,13 @@ class SquawkFirebaseMessageService : FirebaseMessagingService() {
         // The Squawk server always sends just *data* messages, meaning that onMessageReceived when
         // the app is both in the foreground AND the background
 
-        Log.d(TAG, "From: " + remoteMessage?.from)
+        Log.i(TAG, "From: " + remoteMessage?.from)
 
         // Check if message contains a data payload.
         remoteMessage?.data?.let { data ->
-            if (data.isEmpty()) {
-                return@let
-            }
+            if (data.isEmpty()) return@let
 
-            Log.d(TAG, "Message data payload: $data")
+            Log.i(TAG, "Message data payload: $data")
             sendNotification(data)
             insertSquawk(data)
         }
@@ -78,7 +76,7 @@ class SquawkFirebaseMessageService : FirebaseMessagingService() {
      * is initially generated so this is where you would retrieve the token.
      */
     override fun onNewToken(token: String?) {
-        Log.d(TAG, "Refreshed token: " + token!!)
+        Log.d(TAG, "Refreshed token: $token")
         sendRegistrationToServer(token)
     }
 

@@ -25,6 +25,7 @@ import com.alexbaryzhikov.squawker.R
  * Displays an activity for who you are following
  */
 class FollowingPreferenceActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
